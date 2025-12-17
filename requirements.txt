@@ -9,4 +9,4 @@ seaborn==0.13.2
 altair==6.0.0
 pydeck==0.9.1
 rich==14.2.0
-plotly
+plotly==6.5.0
