@@ -539,46 +539,10 @@ with tab3:
         })
         st.dataframe(metrics_table, use_container_width=True, hide_index=True)
         
-        # =============================================================================
-        # RADAR CHART
-        # =============================================================================
-        st.markdown("---")
-        st.markdown("#### 🎯 Performance Radar Chart")
-        
-        fig_radar = go.Figure()
+      
         
         colors = {"Random Forest": "#2ecc71", "SGD": "#e74c3c", "LSTM": "#3498db"}
-        
-        for model in model_names:
-            values = [metrics[model][m] for m in metric_names]
-            values.append(values[0])  # Close the radar
-            
-            fig_radar.add_trace(go.Scatterpolar(
-                r=values,
-                theta=metric_names + [metric_names[0]],
-                fill='toself',
-                name=model,
-                line_color=colors[model],
-                opacity=0.7
-            ))
-        
-        fig_radar.update_layout(
-            polar=dict(
-                radialaxis=dict(visible=True, range=[0, 100])
-            ),
-            showlegend=True,
-            legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5),
-            height=500,
-            title="Model Strengths Comparison"
-        )
-        st.plotly_chart(fig_radar, use_container_width=True)
-        
-        # =============================================================================
-        # CONFUSION MATRICES
-        # =============================================================================
-        st.markdown("---")
-        st.markdown("#### 🔢 Confusion Matrices")
-        
+           
         activity_labels = ["WALKING", "UPSTAIRS", "DOWNSTAIRS", "SITTING", "STANDING", "LAYING"]
         
 
