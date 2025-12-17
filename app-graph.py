@@ -355,101 +355,6 @@ with tab1:
         with col3:
             display_model_result_simple("🧠 LSTM", lstm_pred, lstm_proba)
 
-        # =============================================================================
-        # CONFIDENCE GRAPH FOR SELECTED ACTIVITY
-        # =============================================================================
-        st.markdown("---")
-        st.markdown("### 📊 Model Confidence Comparison")
-        st.caption(f"Confidence scores for the selected activity: **{CLASS_NAMES[selected_activity]}**")
-
-        # Create confidence comparison bar chart
-        confidence_data = {
-            "Model": ["🌲 Random Forest", "📉 SGD", "🧠 LSTM"],
-            "Confidence (%)": [
-                rf_proba[selected_activity] * 100,
-                sgd_proba[selected_activity] * 100,
-                lstm_proba[selected_activity] * 100
-            ],
-            "Prediction Correct": [
-                "✅ Correct" if rf_pred == selected_activity else "❌ Wrong",
-                "✅ Correct" if sgd_pred == selected_activity else "❌ Wrong",
-                "✅ Correct" if lstm_pred == selected_activity else "❌ Wrong"
-            ]
-        }
-        confidence_df = pd.DataFrame(confidence_data)
-
-        fig_confidence = px.bar(
-            confidence_df,
-            x="Model",
-            y="Confidence (%)",
-            color="Prediction Correct",
-            title=f"Model Confidence for '{CLASS_NAMES[selected_activity]}'",
-            color_discrete_map={
-                "✅ Correct": "#2ecc71",
-                "❌ Wrong": "#e74c3c"
-            },
-            text="Confidence (%)"
-        )
-        fig_confidence.update_traces(texttemplate='%{text:.1f}%', textposition='outside')
-        fig_confidence.update_layout(
-            yaxis_range=[0, 110],
-            showlegend=True,
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-            height=400
-        )
-        st.plotly_chart(fig_confidence, use_container_width=True)
-
-        # Create radar chart showing confidence across all activities for each model
-        st.markdown("### 🎯 Full Probability Distribution")
-        st.caption("How each model distributes its confidence across all activities")
-
-        fig_radar_conf = go.Figure()
-        
-        activity_labels_short = ["WALKING", "UPSTAIRS", "DOWNSTAIRS", "SITTING", "STANDING", "LAYING"]
-        
-        models_data = [
-            ("Random Forest", rf_proba, "#2ecc71"),
-            ("SGD", sgd_proba, "#e74c3c"),
-            ("LSTM", lstm_proba, "#3498db")
-        ]
-        
-        for model_name, proba, color in models_data:
-            values = [p * 100 for p in proba]
-            values.append(values[0])  # Close the radar
-            
-            fig_radar_conf.add_trace(go.Scatterpolar(
-                r=values,
-                theta=activity_labels_short + [activity_labels_short[0]],
-                fill='toself',
-                name=model_name,
-                line_color=color,
-                opacity=0.6
-            ))
-        
-        # Add marker for the true activity
-        fig_radar_conf.update_layout(
-            polar=dict(
-                radialaxis=dict(visible=True, range=[0, 100])
-            ),
-            showlegend=True,
-            legend=dict(orientation="h", yanchor="bottom", y=-0.15, xanchor="center", x=0.5),
-            height=500,
-            title=f"Probability Distribution (True Activity: {activity_labels_short[selected_activity]})"
-        )
-        st.plotly_chart(fig_radar_conf, use_container_width=True)
-
-        # Detailed probability table
-        with st.expander("📋 View Detailed Probability Table"):
-            prob_table = pd.DataFrame({
-                "Activity": [CLASS_NAMES[i] for i in range(6)],
-                "🌲 Random Forest": [f"{rf_proba[i] * 100:.2f}%" for i in range(6)],
-                "📉 SGD": [f"{sgd_proba[i] * 100:.2f}%" for i in range(6)],
-                "🧠 LSTM": [f"{lstm_proba[i] * 100:.2f}%" for i in range(6)],
-            })
-            # Highlight the true activity row
-            st.dataframe(prob_table, use_container_width=True, hide_index=True)
-            st.info(f"🎯 True activity: **{CLASS_NAMES[selected_activity]}**")
-
     except Exception as e:
         st.error(f"Error loading models: {e}")
         st.warning("Make sure all model files exist in the `models/` directory")
@@ -668,7 +573,18 @@ with tab3:
         )
         st.plotly_chart(fig_radar, use_container_width=True)
         
+        # =============================================================================
+        # CONFUSION MATRICES
+        # =============================================================================
+        st.markdown("---")
+        st.markdown("#### 🔢 Confusion Matrices")
+        
+        activity_labels = ["WALKING", "UPSTAIRS", "DOWNSTAIRS", "SITTING", "STANDING", "LAYING"]
+        
 
+        
+
+        
         # =============================================================================
         # PER-CLASS ACCURACY
         # =============================================================================
