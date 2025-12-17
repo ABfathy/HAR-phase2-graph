@@ -668,35 +668,7 @@ with tab3:
         )
         st.plotly_chart(fig_radar, use_container_width=True)
         
-        # =============================================================================
-        # CONFUSION MATRICES
-        # =============================================================================
-        st.markdown("---")
-        st.markdown("#### 🔢 Confusion Matrices")
-        
-        activity_labels = ["WALKING", "UPSTAIRS", "DOWNSTAIRS", "SITTING", "STANDING", "LAYING"]
-        
-        cols = st.columns(3)
-        
-        for idx, model in enumerate(model_names):
-            with cols[idx]:
-                st.markdown(f"**{model}**")
-                cm = metrics[model]["confusion_matrix"]
-                
-                fig_cm = px.imshow(
-                    cm,
-                    labels=dict(x="Predicted", y="Actual", color="Count"),
-                    x=activity_labels,
-                    y=activity_labels,
-                    color_continuous_scale="Blues",
-                    text_auto=True
-                )
-                fig_cm.update_layout(
-                    height=350,
-                    margin=dict(l=10, r=10, t=30, b=10)
-                )
-                st.plotly_chart(fig_cm, use_container_width=True)
-        
+
         # =============================================================================
         # PER-CLASS ACCURACY
         # =============================================================================
